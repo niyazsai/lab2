@@ -1,19 +1,29 @@
-namespace lab2;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class Product
+namespace lab2
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public bool IsPurchased { get; set; }
-    public DateTime? PurchaseDate { get; set; }
-    public string Category { get; set; }
-
-    public Product() { }  
-
-    public Product(string name, string category)
+    public class Product
     {
-        Name = name;
-        IsPurchased = false;
-        Category = category;
+        [Key]
+        public int ProductId { get; set; } // Ключевой идентификатор
+
+        [Required]
+        public string Name { get; set; }
+
+        public string Category { get; set; }
+
+        // Ссылка на список покупок
+        public int ShoppingListId { get; set; }
+        public ShoppingList ShoppingList { get; set; }
+
+        // Конструктор по умолчанию для EF Core
+        public Product() { }
+
+        public Product(string name, string category)
+        {
+            Name = name;
+            Category = category;
+        }
     }
 }

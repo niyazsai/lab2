@@ -1,16 +1,25 @@
-﻿namespace lab2;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-class Program
+namespace lab2
 {
-    static async Task Main(string[] args)
+    class Program
     {
-        var connectionString = "Data Source=shoppinglists.db"; // Пусть базы данных
-        var dbContext = new ShoppingListDbContext(connectionString);
-        await dbContext.InitializeAsync();
+        static async Task Main(string[] args)
+        {
+            // Настраиваем параметры DbContext
+            var optionsBuilder = new DbContextOptionsBuilder<ShoppingListDbContext>();
+            optionsBuilder.UseSqlite("Data Source=shoppinglist.db");
 
-        var repository = new ShoppingListRepository(dbContext);
-        var commandHandler = await CommandHandler.Initialize(repository);
-        var ui = new UserInterface(repository, commandHandler);
-        ui.MainMenu();
+            // Создаем экземпляры DbContext и репозитория
+            using (var context = new ShoppingListDbContext(optionsBuilder.Options))
+            {
+                var repository = new ShoppingListRepository(context);
+                var commandHandler = new CommandHandler(repository);
+                var ui = new UserInterface(commandHandler);
+                await ui.MainMenuAsync();
+            }
+        }
     }
 }

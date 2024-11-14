@@ -1,49 +1,39 @@
-namespace lab2;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-public class ShoppingList
+namespace lab2
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    private List<Product> products = new List<Product>();
-    private History history = new History();
-
-    public List<Product> Products 
-    { 
-        get => products; 
-        set => products = value ?? new List<Product>(); 
-    }
-    public History History => history;
-
-    public ShoppingList() { }  
-
-    public ShoppingList(string name)
+    public class ShoppingList
     {
-        Name = name;
-    }
+        [Key]
+        public int ShoppingListId { get; set; } // Ключевой идентификатор
 
-    public void AddProduct(Product product)
-    {
-        products.Add(product);
-        history.AddEntry($"Добавлен товар '{product.Name}'");
-    }
+        [Required]
+        public string Name { get; set; }
 
-    public void RemoveProduct(int index)
-    {
-        if (index >= 0 && index < products.Count)
+        // Навигационное свойство
+        public ICollection<Product> Products { get; set; } = new List<Product>();
+
+        public ShoppingList() { } // Конструктор по умолчанию для EF Core
+
+        public ShoppingList(string name)
         {
-            var productName = products[index].Name;
-            products.RemoveAt(index);
-            history.AddEntry($"Удален товар '{productName}'");
+            Name = name;
         }
-    }
 
-    public void MarkAsPurchased(int index)
-    {
-        if (index >= 0 && index < products.Count)
+        public void AddProduct(Product product)
         {
-            products[index].IsPurchased = true;
-            products[index].PurchaseDate = DateTime.Now;
-            history.AddEntry($"Товар '{products[index].Name}' отмечен как купленный");
+            product.ShoppingList = this;
+            Products.Add(product);
+        }
+
+        public void RemoveProduct(int index)
+        {
+            if (index >= 0 && index < Products.Count)
+            {
+                var product = Products.ElementAt(index);
+                Products.Remove(product);
+            }
         }
     }
 }

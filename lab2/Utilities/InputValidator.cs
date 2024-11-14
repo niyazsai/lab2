@@ -1,38 +1,41 @@
-namespace lab2;
+using System;
 
-public static class InputValidator
+namespace lab2
 {
-    public static int GetValidatedInt(string prompt, int min, int max)
+    public static class InputValidator
     {
-        int result;
-        do
+        public static int GetValidatedInt(string prompt, int min, int max)
         {
-            Console.Write(prompt);
-            var input = Console.ReadLine();
-            if (int.TryParse(input, out result) && result >= min && result <= max)
+            int result;
+            do
             {
-                break;
-            }
-            Console.WriteLine("Некорректный ввод. Пожалуйста, попробуйте снова.");
-        } while (true);
+                Console.Write(prompt);
+                var input = Console.ReadLine();
+                if (int.TryParse(input, out result) && result >= min && result <= max)
+                {
+                    break;
+                }
+                Console.WriteLine("Некорректный ввод. Пожалуйста, попробуйте снова.");
+            } while (true);
 
-        return result;
-    }
+            return result;
+        }
 
-    public static string GetNonEmptyString(string prompt)
-    {
-        string input;
-        do
+        public static string GetNonEmptyString(string prompt)
         {
-            Console.Write(prompt);
-            input = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(input))
+            string input;
+            do
             {
-                break;
-            }
-            Console.WriteLine("Строка не должна быть пустой. Пожалуйста, попробуйте снова.");
-        } while (true);
+                Console.Write(prompt);
+                input = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(input))
+                {
+                    break;
+                }
+                Console.WriteLine("Ввод не должен быть пустым. Пожалуйста, попробуйте снова.");
+            } while (true);
 
-        return input;
+            return input;
+        }
     }
 }

@@ -1,25 +1,55 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 namespace lab2
 {
     public class ShoppingListRepository
     {
-        private readonly ShoppingListDbContext dbContext;
+        private readonly ShoppingListDbContext _context;
 
-        public ShoppingListRepository(ShoppingListDbContext dbContext)
+        public ShoppingListRepository(ShoppingListDbContext context)
         {
-            this.dbContext = dbContext;
+            _context = context;
         }
 
-        public async Task<List<ShoppingList>> LoadData()
+        public async Task<List<ShoppingList>> GetAllShoppingListsAsync()
         {
-            return await dbContext.GetShoppingListsAsync();
+            return await _context.ShoppingLists
+                .Include(s => s.Products)
+                .ToListAsync();
         }
 
-        public async Task SaveData(List<ShoppingList> shoppingLists)
+        public async Task AddShoppingListAsync(ShoppingList shoppingList)
         {
-            foreach (var shoppingList in shoppingLists)
+            _context.ShoppingLists.Add(shoppingList);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateShoppingListAsync(ShoppingList shoppingList)
+        {
+            _context.ShoppingLists.Update(shoppingList);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteShoppingListAsync(int shoppingListId)
+        {
+            var shoppingList = await _context.ShoppingLists
+                .Include(s => s.Products)
+                .FirstOrDefaultAsync(s => s.ShoppingListId == shoppingListId);
+            if (shoppingList != null)
             {
-                await dbContext.SaveShoppingListAsync(shoppingList);
+                _context.ShoppingLists.Remove(shoppingList);
+                await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<ShoppingList> GetShoppingListByIdAsync(int id)
+        {
+            return await _context.ShoppingLists
+                .Include(s => s.Products)
+                .FirstOrDefaultAsync(s => s.ShoppingListId == id);
         }
     }
 }

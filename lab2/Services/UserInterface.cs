@@ -1,39 +1,39 @@
-namespace lab2;
+using System.Threading.Tasks;
 
-public class UserInterface
+namespace lab2
 {
-    private readonly CommandHandler commandHandler;
-    private readonly ShoppingListRepository repository;
-
-    public UserInterface(ShoppingListRepository repository, CommandHandler commandHandler)
+    public class UserInterface
     {
-        this.repository = repository;
-        this.commandHandler = commandHandler;
-    }
+        private readonly CommandHandler _commandHandler;
 
-    public void MainMenu()
-    {
-        while (true)
+        public UserInterface(CommandHandler commandHandler)
         {
-            Console.Clear();
-            Console.WriteLine("=== Меню ===");
-            Console.WriteLine("1. Создать новый список");
-            Console.WriteLine("2. Просмотреть текущие списки");
-            Console.WriteLine("3. Выйти");
+            _commandHandler = commandHandler;
+        }
 
-            int choice = InputValidator.GetValidatedInt("Выберите действие: ", 1, 3);
-
-            switch (choice)
+        public async Task MainMenuAsync()
+        {
+            while (true)
             {
-                case 1:
-                    commandHandler.CreateNewList();
-                    break;
-                case 2:
-                    commandHandler.ViewLists();
-                    break;
-                case 3:
-                    repository.SaveData(commandHandler.GetShoppingLists()); // Используем SaveData напрямую
-                    return;
+                Console.Clear();
+                Console.WriteLine("=== Меню ===");
+                Console.WriteLine("1. Создать новый список");
+                Console.WriteLine("2. Просмотреть текущие списки");
+                Console.WriteLine("3. Выйти");
+
+                int choice = InputValidator.GetValidatedInt("Выберите действие: ", 1, 3);
+
+                switch (choice)
+                {
+                    case 1:
+                        await _commandHandler.CreateNewListAsync();
+                        break;
+                    case 2:
+                        await _commandHandler.ViewListsAsync();
+                        break;
+                    case 3:
+                        return;
+                }
             }
         }
     }
