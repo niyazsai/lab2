@@ -203,16 +203,16 @@ namespace lab2
         private void ViewHistory(ShoppingList shoppingList)
         {
             Console.Clear();
-            if (shoppingList.history.Changes.Count == 0)
+            if (shoppingList.History.Entries.Count == 0)
             {
                 Console.WriteLine("История изменений пуста.");
             }
             else
             {
                 Console.WriteLine("История изменений:");
-                foreach (var entry in shoppingList.history.Changes)
+                foreach (var entry in shoppingList.History.Entries)
                 {
-                    Console.WriteLine(entry);
+                    Console.WriteLine($"{entry.Timestamp}: {entry.Description}");
                 }
             }
             Console.WriteLine("Нажмите любую клавишу для продолжения.");

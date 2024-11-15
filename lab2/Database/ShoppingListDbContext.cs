@@ -7,6 +7,7 @@ namespace lab2
         public DbSet<ShoppingList> ShoppingLists { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<History> Histories { get; set; }
+        public DbSet<HistoryEntry> HistoryEntries { get; set; }
 
         public ShoppingListDbContext(DbContextOptions<ShoppingListDbContext> options)
             : base(options)
@@ -28,6 +29,20 @@ namespace lab2
         //         .WithOne(p => p.ShoppingList)
         //         .HasForeignKey(p => p.ShoppingListId)
         //         .OnDelete(DeleteBehavior.Cascade);
-        // }
+        
+            // Настройка связи 1 к 1 между ShoppingList и History
+            // modelBuilder.Entity<ShoppingList>()
+            //  .HasOne(s => s.History)
+            //     .WithOne()
+            //     .HasForeignKey<History>(h => h.ShoppingListId)
+            // .OnDelete(DeleteBehavior.Cascade);
+            //
+            // // Настройка связи 1 ко многим между History и HistoryEntry
+            // modelBuilder.Entity<History>()
+            // .HasMany(h => h.Entries)
+            //     .WithOne(e => e.History)
+            //     .HasForeignKey(e => e.HistoryId)
+            //     .OnDelete(DeleteBehavior.Cascade);
+            // }
     }
 }

@@ -18,6 +18,8 @@ namespace lab2
         {
             return await _context.ShoppingLists
                 .Include(s => s.Products)
+                .Include(s => s.History)
+                    .ThenInclude(h => h.Entries)
                 .ToListAsync();
         }
 

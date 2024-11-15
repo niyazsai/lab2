@@ -2,31 +2,33 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace lab2
-{
+{ 
     public class ShoppingList
     {
         [Key]
-        public int ShoppingListId { get; set; } // Ключевой идентификатор
+        public int ShoppingListId { get; set; }
 
         [Required]
         public string Name { get; set; }
 
-        // Навигационное свойство
         public List<Product> Products { get; set; } = new List<Product>();
-        public History history { get; set; } = new History();
 
-        public ShoppingList() { } // Конструктор по умолчанию для EF Core
+        // Навигационное свойство для истории
+        public History History { get; set; } = new History();
+
+        public ShoppingList() { }
 
         public ShoppingList(string name)
         {
             Name = name;
+            History = new History { ShoppingListId = this.ShoppingListId };
         }
 
         public void AddProduct(Product product)
         {
             product.ShoppingList = this;
             Products.Add(product);
-            history.AddEntry($"Добавлен товар '{product.Name}'");
+            History.AddEntry($"Добавлен товар '{product.Name}'");
         }
 
         public void RemoveProduct(int index)
@@ -35,17 +37,18 @@ namespace lab2
             {
                 var product = Products.ElementAt(index);
                 Products.Remove(product);
-                history.AddEntry($"Удален товар '{product.Name}'");
+                History.AddEntry($"Удален товар '{product.Name}'");
             }
         }
-        
+
         public void MarkAsPurchased(int index)
         {
             if (index >= 0 && index < Products.Count)
             {
-                Products[index].IsPurchased = true;
-                Products[index].PurchaseDate = DateTime.Now;
-                history.AddEntry($"Товар '{Products[index].Name}' отмечен как купленный");
+                var product = Products[index];
+                product.IsPurchased = true;
+                product.PurchaseDate = DateTime.Now;
+                History.AddEntry($"Товар '{product.Name}' отмечен как купленный");
             }
         }
     }
