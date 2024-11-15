@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 
 namespace lab2
 {
@@ -8,6 +9,7 @@ namespace lab2
     {
         static async Task Main(string[] args)
         {
+            Batteries.Init();
             // Настраиваем параметры DbContext
             var optionsBuilder = new DbContextOptionsBuilder<ShoppingListDbContext>();
             optionsBuilder.UseSqlite("Data Source=shoppinglist.db");

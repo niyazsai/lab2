@@ -17,6 +17,25 @@ namespace lab2
             Console.Clear();
             string name = InputValidator.GetNonEmptyString("Введите название нового списка: ");
             var shoppingList = new ShoppingList(name);
+            Console.WriteLine("Добавьте товары в список. Введите 'готово' для завершения.");
+            while (true)
+            {
+                string productName = InputValidator.GetNonEmptyString("Товар: ");
+                if (productName.ToLower() == "готово")
+                {
+                    break;
+                }
+
+                Console.Write("Категория товара: ");
+                string category = Console.ReadLine();
+
+                var product = new Product(productName, category)
+                {
+                    ShoppingListId = shoppingList.ShoppingListId
+                };
+
+                shoppingList.AddProduct(product);
+            }
             await _repository.AddShoppingListAsync(shoppingList);
             Console.WriteLine("Новый список создан. Нажмите любую клавишу для продолжения.");
             Console.ReadLine();
@@ -56,31 +75,33 @@ namespace lab2
             {
                 Console.Clear();
                 Console.WriteLine($"== {shoppingList.Name} ==");
-                Console.WriteLine("1. Добавить товары");
-                Console.WriteLine("2. Просмотреть товары");
-                Console.WriteLine("3. Удалить товар");
-                Console.WriteLine("4. Удалить список");
-                Console.WriteLine("5. Назад");
+                Console.WriteLine("1. Просмотреть товары");
+                Console.WriteLine("2. Отметить покупку");
+                Console.WriteLine("3. Добавить товары");
+                Console.WriteLine("4. Удалить товар");
+                Console.WriteLine("5. Посмотреть историю");
+                Console.WriteLine("6. Назад");
 
-                int choice = InputValidator.GetValidatedInt("Выберите действие: ", 1, 5);
+                int choice = InputValidator.GetValidatedInt("Выберите действие: ", 1, 6);
 
                 switch (choice)
                 {
                     case 1:
-                        await EditListAsync(shoppingList);
-                        break;
-                    case 2:
                         ViewProducts(shoppingList);
                         break;
+                    case 2:
+                        await MarkPurchaseAsync(shoppingList);
+                        return;
                     case 3:
-                        await RemoveProductAsync(shoppingList);
+                        await EditListAsync(shoppingList);
                         break;
                     case 4:
-                        await _repository.DeleteShoppingListAsync(shoppingList.ShoppingListId);
-                        Console.WriteLine("Список удален. Нажмите любую клавишу для продолжения.");
-                        Console.ReadLine();
-                        return;
+                        await RemoveProductAsync(shoppingList);
+                        break;
                     case 5:
+                        ViewHistory(shoppingList);
+                        break;
+                    case 6:
                         return;
                 }
             }
@@ -125,10 +146,29 @@ namespace lab2
                 Console.WriteLine("Товары в списке:");
                 foreach (var product in shoppingList.Products)
                 {
-                    Console.WriteLine($"- {product.Name} [{product.Category}]");
+                    string status = product.IsPurchased ? "(Куплено)" : "(Не куплено)";
+                    Console.WriteLine($"- {product.Name} [{product.Category}] {status}");
                 }
             }
             Console.WriteLine("Нажмите любую клавишу для продолжения.");
+            Console.ReadLine();
+        }
+        
+        private async Task MarkPurchaseAsync(ShoppingList shoppingList)
+        {
+            Console.Clear();
+            Console.WriteLine("Товары в списке:");
+            for (int i = 0; i < shoppingList.Products.Count; i++)
+            {
+                var product = shoppingList.Products[i];
+                string status = product.IsPurchased ? "(Куплено)" : "(Не куплено)";
+                Console.WriteLine($"{i + 1}. {product.Name} [{product.Category}] {status}");
+            }
+
+            int choice = InputValidator.GetValidatedInt("Выберите номер товара для отметки: ", 1, shoppingList.Products.Count);
+            shoppingList.MarkAsPurchased(choice - 1);
+            await _repository.UpdateShoppingListAsync(shoppingList);
+            Console.WriteLine("Товар успешно отмечен как купленный. Нажмите любую клавишу для продолжения.");
             Console.ReadLine();
         }
 
@@ -153,11 +193,29 @@ namespace lab2
             }
 
             int choice = InputValidator.GetValidatedInt("Выберите номер товара для удаления: ", 1, products.Count);
-            var productToRemove = products[choice - 1];
-            shoppingList.Products.Remove(productToRemove);
+            shoppingList.RemoveProduct(choice - 1);
             await _repository.UpdateShoppingListAsync(shoppingList);
 
             Console.WriteLine("Товар успешно удален. Нажмите любую клавишу для продолжения.");
+            Console.ReadLine();
+        }
+        
+        private void ViewHistory(ShoppingList shoppingList)
+        {
+            Console.Clear();
+            if (shoppingList.history.Changes.Count == 0)
+            {
+                Console.WriteLine("История изменений пуста.");
+            }
+            else
+            {
+                Console.WriteLine("История изменений:");
+                foreach (var entry in shoppingList.history.Changes)
+                {
+                    Console.WriteLine(entry);
+                }
+            }
+            Console.WriteLine("Нажмите любую клавишу для продолжения.");
             Console.ReadLine();
         }
     }

@@ -23,7 +23,7 @@ namespace lab2
 
         public async Task AddShoppingListAsync(ShoppingList shoppingList)
         {
-            _context.ShoppingLists.Add(shoppingList);
+            await _context.ShoppingLists.AddAsync(shoppingList);
             await _context.SaveChangesAsync();
         }
 
@@ -31,25 +31,6 @@ namespace lab2
         {
             _context.ShoppingLists.Update(shoppingList);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteShoppingListAsync(int shoppingListId)
-        {
-            var shoppingList = await _context.ShoppingLists
-                .Include(s => s.Products)
-                .FirstOrDefaultAsync(s => s.ShoppingListId == shoppingListId);
-            if (shoppingList != null)
-            {
-                _context.ShoppingLists.Remove(shoppingList);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task<ShoppingList> GetShoppingListByIdAsync(int id)
-        {
-            return await _context.ShoppingLists
-                .Include(s => s.Products)
-                .FirstOrDefaultAsync(s => s.ShoppingListId == id);
         }
     }
 }

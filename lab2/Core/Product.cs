@@ -12,6 +12,8 @@ namespace lab2
         public string Name { get; set; }
 
         public string Category { get; set; }
+        public bool IsPurchased { get; set; }
+        public DateTime PurchaseDate { get; set; }
 
         // Ссылка на список покупок
         public int ShoppingListId { get; set; }
@@ -24,6 +26,7 @@ namespace lab2
         {
             Name = name;
             Category = category;
+            IsPurchased = false;
         }
     }
 }
