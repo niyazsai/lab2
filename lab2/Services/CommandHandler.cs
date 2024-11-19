@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace lab2
 {
     public class CommandHandler
@@ -14,7 +11,7 @@ namespace lab2
 
         public async Task CreateNewListAsync()
         {
-            Console.Clear();
+            //Console.Clear();
             string name = InputValidator.GetNonEmptyString("Введите название нового списка: ");
             var shoppingList = new ShoppingList(name);
             Console.WriteLine("Добавьте товары в список. Введите 'готово' для завершения.");
@@ -43,7 +40,7 @@ namespace lab2
 
         public async Task ViewListsAsync()
         {
-            Console.Clear();
+            //Console.Clear();
             var shoppingLists = await _repository.GetAllShoppingListsAsync();
             if (shoppingLists.Count == 0)
             {
@@ -109,7 +106,7 @@ namespace lab2
 
         private async Task EditListAsync(ShoppingList shoppingList)
         {
-            Console.Clear();
+            //Console.Clear();
             Console.WriteLine("Добавьте товары в список. Введите 'готово' для завершения.");
             while (true)
             {
@@ -136,7 +133,7 @@ namespace lab2
 
         private void ViewProducts(ShoppingList shoppingList)
         {
-            Console.Clear();
+            //Console.Clear();
             if (shoppingList.Products.Count == 0)
             {
                 Console.WriteLine("Список товаров пуст.");
@@ -156,7 +153,7 @@ namespace lab2
         
         private async Task MarkPurchaseAsync(ShoppingList shoppingList)
         {
-            Console.Clear();
+            //Console.Clear();
             Console.WriteLine("Товары в списке:");
             for (int i = 0; i < shoppingList.Products.Count; i++)
             {
@@ -174,7 +171,7 @@ namespace lab2
 
         private async Task RemoveProductAsync(ShoppingList shoppingList)
         {
-            Console.Clear();
+            //Console.Clear();
             if (shoppingList.Products.Count == 0)
             {
                 Console.WriteLine("Список товаров пуст.");
@@ -202,7 +199,7 @@ namespace lab2
         
         private void ViewHistory(ShoppingList shoppingList)
         {
-            Console.Clear();
+            //Console.Clear();
             if (shoppingList.History.Entries.Count == 0)
             {
                 Console.WriteLine("История изменений пуста.");

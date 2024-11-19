@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace lab2
 {
     public class UserInterface

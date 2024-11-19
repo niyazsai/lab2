@@ -1,5 +1,3 @@
-using System;
-
 namespace lab2
 {
     public static class InputValidator

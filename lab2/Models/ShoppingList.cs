@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace lab2
@@ -12,8 +11,7 @@ namespace lab2
         public string Name { get; set; }
 
         public List<Product> Products { get; set; } = new List<Product>();
-
-        // Навигационное свойство для истории
+        
         public History History { get; set; } = new History();
 
         public ShoppingList() { }
